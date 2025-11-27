@@ -1,4 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/supabase/serverClient";
+import { getCurrentAdvisorId } from "@/lib/advisorContext";
 import type {
   AdapterResult,
   ProductSnapshot,
@@ -43,12 +44,14 @@ async function fetchFromSupabase(): Promise<ProductSnapshot[] | null> {
     return null;
   }
 
+  const advisorId = getCurrentAdvisorId();
   const { data, error } = await client
     .from<ProductPositionRow>(PRODUCT_POSITIONS_TABLE)
     .select(
       "client_id, product_code, product_name, type, amount_invested, current_value, metadata",
     )
-    .eq("type", "LOAN");
+    .eq("type", "LOAN")
+    .eq("advisor_id", advisorId);
 
   if (error) {
     console.error("Supabase loanAdapter error:", error);

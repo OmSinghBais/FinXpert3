@@ -1,4 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/supabase/serverClient";
+import { getCurrentAdvisorId, getCurrentTenantId } from "@/lib/advisorContext";
 
 type LogPayload = {
   scope: string;
@@ -27,11 +28,15 @@ async function persistEntry(entry: LogPayload & { timestamp: string }) {
   }
 
   try {
+    const advisorId = getCurrentAdvisorId();
+    const tenantId = getCurrentTenantId();
     await client.from(AGENT_LOG_TABLE).insert({
       scope: entry.scope,
       prompt: entry.prompt ?? null,
       payload: entry,
       error: entry.error ?? null,
+      advisor_id: advisorId,
+      tenant_id: tenantId,
       created_at: entry.timestamp,
     });
   } catch (error) {

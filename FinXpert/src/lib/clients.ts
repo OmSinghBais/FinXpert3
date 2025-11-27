@@ -4,6 +4,7 @@ import {
   ProductSnapshot,
 } from "./adapters";
 import { getSupabaseServerClient } from "./supabase/serverClient";
+import { getCurrentAdvisorId } from "./advisorContext";
 
 const FALLBACK_CLIENTS: Record<
   string,
@@ -103,10 +104,12 @@ async function fetchClientProfile(clientId: string): Promise<ClientProfile | nul
       : null;
   }
 
+  const advisorId = getCurrentAdvisorId();
   const { data, error } = await client
     .from("clients")
     .select("id, name, segment, notes")
     .eq("id", clientId)
+    .eq("advisor_id", advisorId)
     .single();
 
   if (error) {

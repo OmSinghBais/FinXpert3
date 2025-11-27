@@ -1,4 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/supabase/serverClient";
+import { getCurrentAdvisorId } from "@/lib/advisorContext";
 
 export type ClientTask = {
   id: string;
@@ -35,10 +36,12 @@ export async function fetchClientTasks(clientId: string): Promise<ClientTask[]> 
     return MOCK_TASKS.filter((task) => task.clientId === clientId);
   }
 
+  const advisorId = getCurrentAdvisorId();
   const { data, error } = await client
     .from("client_tasks")
     .select("id, client_id, title, description, status, due_date")
     .eq("client_id", clientId)
+    .eq("advisor_id", advisorId)
     .order("created_at", { ascending: false });
 
   if (error) {

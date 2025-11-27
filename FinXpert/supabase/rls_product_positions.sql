@@ -2,7 +2,8 @@
 alter table if exists product_positions enable row level security;
 
 -- Allow the service role full access (implicit but keeps policies explicit)
-create policy if not exists "product_positions_service_role_full_access"
+drop policy if exists "product_positions_service_role_full_access" on product_positions;
+create policy "product_positions_service_role_full_access"
 on product_positions
 as permissive
 for all
@@ -11,7 +12,8 @@ using (true)
 with check (true);
 
 -- Allow public/anon read access for now (replace condition with tenant logic later)
-create policy if not exists "product_positions_public_read"
+drop policy if exists "product_positions_public_read" on product_positions;
+create policy "product_positions_public_read"
 on product_positions
 as permissive
 for select

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseServerClient } from "@/lib/supabase/serverClient";
+import { getCurrentAdvisorId } from "@/lib/advisorContext";
 
 const TaskPayloadSchema = z.object({
   title: z.string().min(3),
@@ -23,10 +24,12 @@ export async function GET(_: Request, context: RouteContext) {
     );
   }
 
+  const advisorId = getCurrentAdvisorId();
   const { data, error } = await client
     .from("client_tasks")
     .select("id, title, description, status, due_date")
     .eq("client_id", context.params.id)
+    .eq("advisor_id", advisorId)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -47,10 +50,12 @@ export async function POST(request: Request, context: RouteContext) {
 
   const payload = TaskPayloadSchema.parse(await request.json());
 
+  const advisorId = getCurrentAdvisorId();
   const { data, error } = await client
     .from("client_tasks")
     .insert({
       client_id: context.params.id,
+      advisor_id: advisorId,
       title: payload.title,
       description: payload.description ?? null,
       due_date: payload.dueDate ?? null,
@@ -93,6 +98,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   const payload = UpdateTaskSchema.parse(await request.json());
 
+  const advisorId = getCurrentAdvisorId();
   const { data, error } = await client
     .from("client_tasks")
     .update({
@@ -102,6 +108,7 @@ export async function PATCH(request: Request, context: RouteContext) {
       due_date: payload.dueDate,
     })
     .eq("client_id", context.params.id)
+    .eq("advisor_id", advisorId)
     .eq("id", taskId)
     .select("id, title, description, status, due_date")
     .single();
