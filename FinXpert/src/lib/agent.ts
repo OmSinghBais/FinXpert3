@@ -1,6 +1,8 @@
 import {
   fetchLoanData,
   fetchMutualFundData,
+  fetchInsuranceData,
+  fetchAifData,
   AdapterResult,
   ProductSnapshot,
 } from "./adapters";
@@ -31,6 +33,8 @@ export async function runFinXpertAgent(prompt: string): Promise<AgentResponse> {
     const adapterResults: AdapterResult[] = await Promise.all([
       fetchMutualFundData(),
       fetchLoanData(),
+      fetchInsuranceData(),
+      fetchAifData(),
     ]);
 
     const flattened: ProductSnapshot[] = adapterResults.flatMap(
