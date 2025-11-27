@@ -104,7 +104,7 @@ async function fetchClientProfile(clientId: string): Promise<ClientProfile | nul
       : null;
   }
 
-  const advisorId = getCurrentAdvisorId();
+  const advisorId = await getCurrentAdvisorId();
   const { data, error } = await client
     .from("clients")
     .select("id, name, segment, notes")

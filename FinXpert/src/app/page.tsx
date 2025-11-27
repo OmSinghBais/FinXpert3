@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { runFinXpertAgent } from "@/lib/agent";
 import { fetchCampaignTemplates, fetchComplianceFlags } from "@/lib/adapters";
+import { PortfolioChart } from "@/components/portfolio/PortfolioChart";
+import { LogoutButton } from "@/components/auth/LogoutButton";
+import { getServerUser } from "@/lib/supabase/serverAuth";
 
 export default async function Home() {
+  const user = await getServerUser();
   const [agentResponse, campaignTemplates, complianceAlerts] = await Promise.all([
     runFinXpertAgent("Surface the most urgent advisor actions for today."),
     fetchCampaignTemplates(),
@@ -34,16 +38,20 @@ export default async function Home() {
     <div className="min-h-screen bg-slate-950 py-16 text-white">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 rounded-3xl bg-slate-900/80 p-10 shadow-2xl">
         <header className="space-y-3">
-          <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">
-            FinXpert Control Tower
-          </p>
-          <h1 className="text-3xl font-semibold text-white">
-            AI snapshot for your book of business
-          </h1>
-          <p className="text-slate-300">
-            Data is mocked until you connect live adapters. The agent summary
-            below illustrates how insights + context appear inside the dashboard.
-          </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">
+                FinXpert Control Tower
+              </p>
+              <h1 className="mt-2 text-3xl font-semibold text-white">
+                AI snapshot for your book of business
+              </h1>
+              <p className="mt-2 text-slate-300">
+                {user ? `Welcome, ${user.email}` : "Data is mocked until you connect live adapters. The agent summary below illustrates how insights + context appear inside the dashboard."}
+              </p>
+            </div>
+            {user && <LogoutButton />}
+          </div>
         </header>
 
         <section className="rounded-2xl bg-slate-800/70 p-6">
@@ -134,6 +142,10 @@ export default async function Home() {
               </button>
             </article>
           ))}
+        </section>
+
+        <section className="rounded-2xl bg-slate-800/70 p-6">
+          <PortfolioChart positions={agentResponse.sourceData} />
         </section>
 
         <section className="grid gap-6 lg:grid-cols-2">

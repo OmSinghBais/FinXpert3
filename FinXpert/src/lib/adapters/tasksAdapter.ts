@@ -36,7 +36,7 @@ export async function fetchClientTasks(clientId: string): Promise<ClientTask[]> 
     return MOCK_TASKS.filter((task) => task.clientId === clientId);
   }
 
-  const advisorId = getCurrentAdvisorId();
+  const advisorId = await getCurrentAdvisorId();
   const { data, error } = await client
     .from("client_tasks")
     .select("id, client_id, title, description, status, due_date")

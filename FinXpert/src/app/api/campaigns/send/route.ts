@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   }
 
   const payload = SendCampaignSchema.parse(await request.json());
-  const advisorId = getCurrentAdvisorId();
+  const advisorId = await getCurrentAdvisorId();
 
   // Fetch template
   const { data: template, error: templateError } = await client

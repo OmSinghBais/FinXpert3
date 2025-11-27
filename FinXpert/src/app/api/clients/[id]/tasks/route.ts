@@ -24,7 +24,7 @@ export async function GET(_: Request, context: RouteContext) {
     );
   }
 
-  const advisorId = getCurrentAdvisorId();
+  const advisorId = await getCurrentAdvisorId();
   const { data, error } = await client
     .from("client_tasks")
     .select("id, title, description, status, due_date")
@@ -50,7 +50,7 @@ export async function POST(request: Request, context: RouteContext) {
 
   const payload = TaskPayloadSchema.parse(await request.json());
 
-  const advisorId = getCurrentAdvisorId();
+  const advisorId = await getCurrentAdvisorId();
   const { data, error } = await client
     .from("client_tasks")
     .insert({
@@ -98,7 +98,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   const payload = UpdateTaskSchema.parse(await request.json());
 
-  const advisorId = getCurrentAdvisorId();
+  const advisorId = await getCurrentAdvisorId();
   const { data, error } = await client
     .from("client_tasks")
     .update({

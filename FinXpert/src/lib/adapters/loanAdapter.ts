@@ -44,7 +44,7 @@ async function fetchFromSupabase(): Promise<ProductSnapshot[] | null> {
     return null;
   }
 
-  const advisorId = getCurrentAdvisorId();
+  const advisorId = await getCurrentAdvisorId();
   const { data, error } = await client
     .from<ProductPositionRow>(PRODUCT_POSITIONS_TABLE)
     .select(

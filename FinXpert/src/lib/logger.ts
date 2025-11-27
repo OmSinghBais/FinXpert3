@@ -28,8 +28,8 @@ async function persistEntry(entry: LogPayload & { timestamp: string }) {
   }
 
   try {
-    const advisorId = getCurrentAdvisorId();
-    const tenantId = getCurrentTenantId();
+    const advisorId = await getCurrentAdvisorId();
+    const tenantId = await getCurrentTenantId();
     await client.from(AGENT_LOG_TABLE).insert({
       scope: entry.scope,
       prompt: entry.prompt ?? null,

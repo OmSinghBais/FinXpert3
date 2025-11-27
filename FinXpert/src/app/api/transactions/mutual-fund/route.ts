@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   }
 
   const payload = TransactionSchema.parse(await request.json());
-  const advisorId = getCurrentAdvisorId();
+  const advisorId = await getCurrentAdvisorId();
 
   // Verify client belongs to advisor
   const { data: clientData, error: clientError } = await client
